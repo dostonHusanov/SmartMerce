@@ -5,7 +5,7 @@ import { WalletStatus } from "@/components/wallet-status";
 export function Header() {
   const navItems = [
     ["Shopper", "/"],
-    ["Store", "/merchant"],
+    ["Orders", "/orders"],
     ["How it works", "/architecture"],
   ];
 
