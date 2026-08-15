@@ -157,7 +157,7 @@ function mapResultToProduct(result: SerpApiShoppingResult, intent: ShoppingInten
     rating: typeof result.rating === "number" && Number.isFinite(result.rating) ? result.rating : 4.2,
     reviewCount: typeof result.reviews === "number" && Number.isFinite(result.reviews) ? result.reviews : Math.max(25, 120 - index * 17),
     shippingEstimate: "Merchant checkout",
-    image: result.thumbnail || fallbackImages[category],
+    image: result.thumbnail || (intent.category ? fallbackImages[category] : ""),
     inStock: true,
     inventory: 1,
     source: "internet",

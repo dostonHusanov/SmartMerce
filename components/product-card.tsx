@@ -3,10 +3,26 @@ import { CheckCircle2, ExternalLink, Star, Truck } from "lucide-react";
 import type { RankedProduct } from "@/types";
 
 export function ProductCard({ product, selected }: { product: RankedProduct; selected?: boolean }) {
+  const hasProductImage = Boolean(product.image);
+  const isLiveWeb = product.source === "internet";
+
   return (
     <article className={`glass flex h-full flex-col overflow-hidden rounded-lg transition hover:border-accent/30 ${selected ? "ring-1 ring-accent/60" : ""}`}>
-      <div className="relative aspect-[16/11] bg-black/30">
-        <Image src={product.image} alt={product.name} fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover" />
+      <div className="relative aspect-[16/11] overflow-hidden bg-black/30">
+        {hasProductImage ? (
+          <Image
+            src={product.image}
+            alt={product.name}
+            fill
+            sizes="(max-width: 768px) 100vw, 33vw"
+            className={isLiveWeb ? "object-contain p-2" : "object-cover"}
+          />
+        ) : (
+          <div className="flex h-full flex-col items-center justify-center gap-2 bg-[radial-gradient(circle_at_center,rgba(86,242,195,0.16),transparent_60%)] px-6 text-center">
+            <span className="text-xs font-bold uppercase tracking-[0.16em] text-accent">Live listing</span>
+            <span className="text-sm leading-5 text-muted">Open source listing for merchant images</span>
+          </div>
+        )}
         {selected ? (
           <div className="absolute left-3 top-3 rounded-full bg-accent px-3 py-1 text-xs font-bold text-background">
             AI RECOMMENDED
