@@ -173,6 +173,23 @@ describe("SmartMerce deterministic core", () => {
     restoreSerpApiKey(original);
   });
 
+  it("does not silently fall back to custom catalogue products when internet discovery is configured", async () => {
+    const original = process.env.SERPAPI_API_KEY;
+    const fetchSpy = vi.spyOn(globalThis, "fetch").mockResolvedValue({
+      ok: true,
+      json: async () => ({ shopping_results: [] }),
+    } as Response);
+
+    restoreSerpApiKey("test-key");
+    const intent = parseIntentDeterministically("Buy me a phone holder under 6 XSGD");
+    const results = await searchProducts(intent);
+
+    expect(results).toEqual([]);
+
+    fetchSpy.mockRestore();
+    restoreSerpApiKey(original);
+  });
+
   it("filters products by category, stock and budget", () => {
     const results = searchCatalogue({ q: "wireless earbuds", category: "earbuds", maxPrice: 6 });
 

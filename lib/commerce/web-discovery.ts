@@ -115,3 +115,7 @@ export async function discoverInternetProducts(intent: ShoppingIntent): Promise<
 
   return products.slice(0, 6);
 }
+
+export function isInternetDiscoveryConfigured() {
+  return Boolean(process.env.SERPAPI_API_KEY?.trim());
+}

@@ -1,4 +1,4 @@
-import { discoverInternetProducts } from "@/lib/commerce/web-discovery";
+import { discoverInternetProducts, isInternetDiscoveryConfigured } from "@/lib/commerce/web-discovery";
 import { searchCatalogue, getProductById, upsertDiscoveredProducts } from "@/lib/commerce/products";
 import { rankProducts, recommendationExplanation } from "@/lib/commerce/ranking";
 import { evaluateSpendingPolicy } from "@/lib/policy/spending-policy";
@@ -7,7 +7,7 @@ import type { Product, ShoppingIntent } from "@/types";
 
 export async function searchProducts(intent: ShoppingIntent) {
   const internetProducts = await discoverInternetProducts(intent);
-  if (internetProducts.length) {
+  if (isInternetDiscoveryConfigured()) {
     return upsertDiscoveredProducts(internetProducts);
   }
 

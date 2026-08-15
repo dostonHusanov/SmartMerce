@@ -1,4 +1,5 @@
 import { getAiProvider } from "@/lib/ai/provider";
+import { isInternetDiscoveryConfigured } from "@/lib/commerce/web-discovery";
 import {
   checkSpendingPolicy,
   compareProducts,
@@ -39,7 +40,7 @@ export async function runSmartMerceAgent(command: string): Promise<AgentRunResul
   if (intent.maxBudgetXsgd) activity.push(stamp(`Budget identified: ${intent.maxBudgetXsgd} XSGD`));
 
   const discovered = await searchProducts(intent);
-  const discoverySource = discovered.some((product) => product.source === "internet") ? "internet" : "catalogue";
+  const discoverySource = isInternetDiscoveryConfigured() ? "internet" : "catalogue";
   steps[2] = {
     ...steps[2],
     status: discovered.length ? "completed" : "failed",

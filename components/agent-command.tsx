@@ -81,11 +81,13 @@ export function AgentCommand() {
 
   const helperMessage = useMemo(() => {
     if (error) return error;
+    if (noProducts && result?.discoverySource === "internet" && budgetTooLow) return "Live internet search found no products inside that budget. Try a higher XSGD limit or a more specific product.";
+    if (noProducts && result?.discoverySource === "internet") return "Live internet search found no matching products. Try a clearer item name or brand.";
     if (noProducts && budgetTooLow) return "No supported merchant products fit that budget. Try a slightly higher XSGD limit.";
     if (noProducts) return "No supported merchant product matched yet. Try a clearer item type, for example desk lamp, watch, shoes, backpack, charger or phone holder.";
     if (hasNoBudget) return "No budget detected. SmartMerce can compare products, but policy will be clearer with a maximum XSGD amount.";
     return undefined;
-  }, [budgetTooLow, error, hasNoBudget, noProducts]);
+  }, [budgetTooLow, error, hasNoBudget, noProducts, result?.discoverySource]);
 
   async function runAgent() {
     setLoading(true);
