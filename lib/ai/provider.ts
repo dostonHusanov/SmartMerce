@@ -18,6 +18,40 @@ const categoryHints = [
   "home accessories",
 ] as const;
 
+const commandStopWords = new Set([
+  "a",
+  "an",
+  "and",
+  "any",
+  "best",
+  "buy",
+  "can",
+  "cheap",
+  "compare",
+  "fast",
+  "find",
+  "for",
+  "get",
+  "good",
+  "high",
+  "me",
+  "of",
+  "option",
+  "options",
+  "please",
+  "prioritize",
+  "quick",
+  "rating",
+  "reviews",
+  "shipping",
+  "the",
+  "under",
+  "value",
+  "with",
+  "xsgd",
+  "sgd",
+]);
+
 export type AiProvider = {
   name: string;
   parseIntent(command: string): Promise<ShoppingIntent>;
@@ -53,17 +87,26 @@ function cleanQuery(command: string, category?: string) {
   if (category === "bags" && /sling/.test(lower)) return "sling";
   if (category === "stationery" && /notebook|journal/.test(lower)) return "notebook";
   if (category === "home accessories" && /bottle/.test(lower)) return "bottle";
-  if (category === "phone accessories" && /holder|stand/.test(lower)) return "holder";
-  if (category === "phone accessories" && /case/.test(lower)) return "case";
+  if (category === "phone accessories" && /holder|stand/.test(lower)) return "phone holder";
+  if (category === "phone accessories" && /case|cover/.test(lower)) return "phone case";
 
-  const budgetless = lower
+  const productPhrase = lower
+    .split(/\b(?:prioritize|prefer|preference|sort by|focus on)\b/)[0]
     .replace(/under\s+\d+(\.\d+)?\s*(xsgd|sgd|s\$|\$)?/g, "")
     .replace(/below\s+\d+(\.\d+)?\s*(xsgd|sgd|s\$|\$)?/g, "")
     .replace(/less than\s+\d+(\.\d+)?\s*(xsgd|sgd|s\$|\$)?/g, "")
     .replace(/(?:max(?:imum)?|budget)\s*(?:of)?\s*\d+(\.\d+)?\s*(xsgd|sgd|s\$|\$)?/g, "")
-    .replace(/buy me|buy|find me|find|get me|get|best|the|prioritize|rating|value|good|high|cheap|affordable|under|xsgd|sgd/g, " ");
-  const candidate = budgetless.replace(/[^\w\s-]/g, " ").replace(/\s+/g, " ").trim();
-  return category ?? (candidate.split(" ").slice(0, 4).join(" ") || command.trim());
+    .replace(/\b(?:buy me|find me|get me|buy|find|get|show me|search for|look for)\b/g, " ");
+  const candidate = productPhrase
+    .replace(/[^\w\s-]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .split(" ")
+    .filter((term) => term.length > 1 && !commandStopWords.has(term))
+    .slice(0, 7)
+    .join(" ");
+
+  return candidate || category || command.trim();
 }
 
 export function parseIntentDeterministically(command: string): ShoppingIntent {

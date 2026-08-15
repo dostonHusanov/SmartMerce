@@ -53,12 +53,93 @@ function searchQuery(intent: ShoppingIntent) {
   return `${query}${budget} Singapore buy online`;
 }
 
+function normalizeText(value: string) {
+  return value.toLowerCase().replace(/[^a-z0-9\s-]/g, " ");
+}
+
+const relevanceStopWords = new Set([
+  "and",
+  "best",
+  "buy",
+  "cheap",
+  "compare",
+  "fast",
+  "find",
+  "for",
+  "good",
+  "high",
+  "me",
+  "online",
+  "option",
+  "options",
+  "rating",
+  "reviews",
+  "shipping",
+  "shop",
+  "singapore",
+  "sgd",
+  "the",
+  "under",
+  "value",
+  "with",
+  "xsgd",
+]);
+
+function queryTerms(query: string) {
+  return normalizeText(query)
+    .split(/\s+/)
+    .filter((term) => term.length > 2 && !relevanceStopWords.has(term));
+}
+
+function hasAny(text: string, terms: string[]) {
+  return terms.some((term) => text.includes(term));
+}
+
+function termVariants(term: string) {
+  const variants = [term];
+
+  if (term.endsWith("en") && term.length > 5) variants.push(term.slice(0, -2));
+  if (term.endsWith("es") && term.length > 4) variants.push(term.slice(0, -2));
+  if (term.endsWith("s") && term.length > 3) variants.push(term.slice(0, -1));
+
+  return variants;
+}
+
+function titleIncludesTerm(title: string, term: string) {
+  return termVariants(term).some((variant) => title.includes(variant));
+}
+
+function resultMatchesIntent(result: SerpApiShoppingResult, intent: ShoppingIntent) {
+  const title = normalizeText(result.title ?? "");
+  const query = normalizeText(intent.query);
+
+  if (!title || !query) return false;
+
+  if (intent.category === "phone accessories") {
+    const wantsCase = query.includes("case") || query.includes("cover");
+    const wantsHolder = query.includes("holder") || query.includes("stand");
+    const phoneTerms = ["phone", "iphone", "samsung", "galaxy", "pixel", "mobile", "cell"];
+
+    if (wantsCase) return hasAny(title, phoneTerms) && hasAny(title, ["case", "cover"]);
+    if (wantsHolder) return hasAny(title, [...phoneTerms, "tablet"]) && hasAny(title, ["holder", "stand", "mount"]);
+  }
+
+  const terms = queryTerms(query);
+  if (terms.length === 0) return true;
+
+  const matchedTerms = terms.filter((term) => titleIncludesTerm(title, term));
+  const requiredMatches = terms.length <= 3 ? terms.length : Math.ceil(terms.length * 0.7);
+
+  return matchedTerms.length >= requiredMatches;
+}
+
 function mapResultToProduct(result: SerpApiShoppingResult, intent: ShoppingIntent, index: number): Product | undefined {
   const name = result.title?.trim();
   const priceXsgd = normalizePrice(result);
   const sourceUrl = result.product_link || result.link;
 
   if (!name || !priceXsgd || priceXsgd <= 0 || !sourceUrl) return undefined;
+  if (!resultMatchesIntent(result, intent)) return undefined;
   if (intent.maxBudgetXsgd !== undefined && priceXsgd > intent.maxBudgetXsgd) return undefined;
 
   const category = intent.category ?? "home accessories";

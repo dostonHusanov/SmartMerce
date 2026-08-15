@@ -64,7 +64,7 @@ describe("SmartMerce deterministic core", () => {
   it("parses the sample shopping request", () => {
     const intent = parseIntentDeterministically("Find me the best wireless earbuds under 6 XSGD. Prioritize rating and value.");
 
-    expect(intent.query).toBe("earbuds");
+    expect(intent.query).toBe("wireless earbuds");
     expect(intent.category).toBe("earbuds");
     expect(intent.maxBudgetXsgd).toBe(6);
     expect(intent.preferences).toContain("high rating");
@@ -128,6 +128,27 @@ describe("SmartMerce deterministic core", () => {
     expect(results.every((product) => product.category === "fitness gear")).toBe(true);
   });
 
+  it("keeps phone accessory queries specific enough for live shopping search", () => {
+    const caseIntent = parseIntentDeterministically("Buy me a phone case under 6 XSGD");
+    const holderIntent = parseIntentDeterministically("Buy me a phone holder under 6 XSGD");
+
+    expect(caseIntent.query).toBe("phone case");
+    expect(holderIntent.query).toBe("phone holder");
+    expect(caseIntent.category).toBe("phone accessories");
+    expect(holderIntent.category).toBe("phone accessories");
+  });
+
+  it("extracts arbitrary product requests for live internet discovery", () => {
+    const dressIntent = parseIntentDeterministically("Buy me a red dress under 40 XSGD. Prioritize rating and fast shipping.");
+    const toyIntent = parseIntentDeterministically("Find a wooden chess set under 25 XSGD");
+
+    expect(dressIntent.query).toBe("red dress");
+    expect(dressIntent.category).toBeUndefined();
+    expect(dressIntent.maxBudgetXsgd).toBe(40);
+    expect(toyIntent.query).toBe("wooden chess set");
+    expect(toyIntent.category).toBeUndefined();
+  });
+
   it("falls back to the local catalogue when internet discovery is not configured", async () => {
     const original = process.env.SERPAPI_API_KEY;
     restoreSerpApiKey(undefined);
@@ -168,6 +189,72 @@ describe("SmartMerce deterministic core", () => {
     expect(results[0].merchant).toBe("Example Store");
     expect(results[0].merchantId).toBe("internet-merchant");
     expect(results[0].priceXsgd).toBe(8.25);
+
+    fetchSpy.mockRestore();
+    restoreSerpApiKey(original);
+  });
+
+  it("keeps relevant arbitrary internet products and removes unrelated results", async () => {
+    const original = process.env.SERPAPI_API_KEY;
+    const fetchSpy = vi.spyOn(globalThis, "fetch").mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        shopping_results: [
+          {
+            title: "Wireless Bluetooth Earbuds",
+            source: "Example Store",
+            product_link: "https://example.com/earbuds",
+            extracted_price: 18,
+          },
+          {
+            title: "Wooden Chess Set Folding Board",
+            source: "Example Store",
+            product_link: "https://example.com/chess",
+            extracted_price: 22,
+          },
+        ],
+      }),
+    } as Response);
+
+    restoreSerpApiKey("test-key");
+    const intent = parseIntentDeterministically("Find a wooden chess set under 25 XSGD");
+    const results = await discoverInternetProducts(intent);
+
+    expect(results).toHaveLength(1);
+    expect(results[0].name).toBe("Wooden Chess Set Folding Board");
+
+    fetchSpy.mockRestore();
+    restoreSerpApiKey(original);
+  });
+
+  it("filters irrelevant internet products before ranking", async () => {
+    const original = process.env.SERPAPI_API_KEY;
+    const fetchSpy = vi.spyOn(globalThis, "fetch").mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        shopping_results: [
+          {
+            title: "Airwaves Sugar-Free Mint Candy Fresh Breath",
+            source: "Lazada Singapore",
+            product_link: "https://example.com/candy",
+            extracted_price: 5.9,
+          },
+          {
+            title: "Clear iPhone Protective Phone Case",
+            source: "Example Store",
+            product_link: "https://example.com/phone-case",
+            extracted_price: 5.5,
+          },
+        ],
+      }),
+    } as Response);
+
+    restoreSerpApiKey("test-key");
+    const intent = parseIntentDeterministically("Buy me a phone case under 6 XSGD");
+    const results = await discoverInternetProducts(intent);
+
+    expect(results).toHaveLength(1);
+    expect(results[0].name).toBe("Clear iPhone Protective Phone Case");
 
     fetchSpy.mockRestore();
     restoreSerpApiKey(original);

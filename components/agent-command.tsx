@@ -13,7 +13,8 @@ import { WalletStatus } from "@/components/wallet-status";
 import type { ActivityLogEntry, AgentRunResult, AgentStep, PurchaseAuthorization as Authorization } from "@/types";
 
 const suggestions = [
-  "Buy me a phone holder under 6 XSGD",
+  "Buy me a phone case under 10 XSGD",
+  "Buy me a phone holder under 10 XSGD",
   "Find an Apple Watch alternative under 10 XSGD",
   "Compare running shoes under 10 XSGD",
   "Find a desk lamp under 9 XSGD",
@@ -51,7 +52,7 @@ function createActivity(message: string): ActivityLogEntry {
 }
 
 export function AgentCommand() {
-  const [command, setCommand] = useState("Buy me a phone holder under 6 XSGD.\nPrioritize rating, value and fast shipping.");
+  const [command, setCommand] = useState("Buy me a phone case under 10 XSGD.\nPrioritize rating, value and fast shipping.");
   const [result, setResult] = useState<AgentRunResult>();
   const [visibleSteps, setVisibleSteps] = useState<AgentStep[]>(initialSteps);
   const [loading, setLoading] = useState(false);
