@@ -16,8 +16,7 @@ export default function OrdersPage() {
     .map((authorization) => ({
       authorization,
       product: products.find((product) => product.id === authorization.productId),
-    }))
-    .filter((item) => item.product);
+    }));
   const paidOrders = orders.filter((order) => order.status === "confirmed" || order.status === "paid");
   const revenueXsgd = paidOrders.reduce((sum, order) => sum + order.amountXsgd, 0);
 
@@ -93,7 +92,7 @@ export default function OrdersPage() {
                 <Row
                   key={authorization.id}
                   title={product?.name ?? "Unknown product"}
-                  meta={`${authorization.exactAmount.toFixed(2)} XSGD · expires ${new Date(authorization.expiresAt).toLocaleTimeString()}`}
+                  meta={`${authorization.exactAmount.toFixed(2)} XSGD · ${authorization.id} · expires ${new Date(authorization.expiresAt).toLocaleTimeString()}`}
                   badge="Waiting"
                   tone="amber"
                 />
@@ -199,7 +198,7 @@ export default function OrdersPage() {
         ) : (
           <div className="p-6">
             <div className="rounded-lg border border-line bg-white/[0.03] p-5 text-sm leading-6 text-muted">
-              No verified orders yet. Use the Shopper page to find a product, approve it, then complete wallet payment.
+              No verified orders yet. Use the Shopper page to find a product, approve it, then complete wallet payment. New paid orders are saved locally so they stay visible after refreshes and dev-server restarts.
             </div>
           </div>
         )}

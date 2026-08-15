@@ -5,6 +5,7 @@ node_modules
 .env*.local
 .env.production
 .env.development
+.smartmerce/
 dist
 coverage
 tsconfig.tsbuildinfo

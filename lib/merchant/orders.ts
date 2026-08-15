@@ -1,4 +1,6 @@
 import { randomUUID } from "crypto";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { join } from "node:path";
 import { getAddress, isAddress } from "viem";
 import { getProductById, reserveProductInventory } from "@/lib/commerce/products";
 import { getConfiguredMerchantWallet } from "@/lib/blockchain/xsgd";
@@ -11,19 +13,59 @@ type SmartMerceStore = {
   orders: Map<string, Order>;
 };
 
+type PersistedSmartMerceStore = {
+  authorizations: PurchaseAuthorization[];
+  orders: Order[];
+};
+
 const globalStore = globalThis as typeof globalThis & {
   __smartmerceStore?: SmartMerceStore;
 };
 
-const store = globalStore.__smartmerceStore ??= {
-  authorizations: new Map<string, PurchaseAuthorization>(),
-  orders: new Map<string, Order>(),
-};
+const persistenceDisabled = process.env.NODE_ENV === "test" || process.env.VITEST === "true";
+const stateDirectory = join(process.cwd(), ".smartmerce");
+const stateFile = join(stateDirectory, "orders.json");
+
+function createEmptyStore(): SmartMerceStore {
+  return {
+    authorizations: new Map<string, PurchaseAuthorization>(),
+    orders: new Map<string, Order>(),
+  };
+}
+
+function loadPersistedStore(): SmartMerceStore {
+  if (persistenceDisabled) return createEmptyStore();
+
+  try {
+    const parsed = JSON.parse(readFileSync(stateFile, "utf8")) as Partial<PersistedSmartMerceStore>;
+    return {
+      authorizations: new Map((parsed.authorizations ?? []).map((authorization) => [authorization.id, authorization])),
+      orders: new Map((parsed.orders ?? []).map((order) => [order.id, order])),
+    };
+  } catch {
+    return createEmptyStore();
+  }
+}
+
+function persistStore() {
+  if (persistenceDisabled) return;
+
+  const payload: PersistedSmartMerceStore = {
+    authorizations: [...authorizations.values()],
+    orders: [...orders.values()],
+  };
+
+  mkdirSync(stateDirectory, { recursive: true });
+  writeFileSync(stateFile, JSON.stringify(payload, null, 2));
+}
+
+const store = globalStore.__smartmerceStore ??= loadPersistedStore();
 
 const { authorizations, orders } = store;
 
 export function saveAuthorization(authorization: PurchaseAuthorization) {
   authorizations.set(authorization.id, authorization);
+  persistStore();
   return authorization;
 }
 
@@ -94,6 +136,7 @@ export function createVerifiedOrder(input: {
 
   orders.set(order.id, order);
   authorizations.delete(input.authorizationId);
+  persistStore();
   return order;
 }
 
@@ -112,5 +155,6 @@ export function updateOrderFulfillment(id: string, input: Pick<Order,
     ...input,
   };
   orders.set(id, updated);
+  persistStore();
   return updated;
 }
