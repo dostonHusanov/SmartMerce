@@ -92,6 +92,36 @@ describe("SmartMerce deterministic core", () => {
     expect(results.every((product) => product.category === "mouse")).toBe(true);
   });
 
+  it("maps Apple Watch style requests to supported smart watch products", () => {
+    const intent = parseIntentDeterministically("Find an Apple Watch alternative under 20 XSGD from a reliable merchant");
+    const results = searchCatalogue({
+      q: intent.query,
+      category: intent.category,
+      maxPrice: intent.maxBudgetXsgd,
+    });
+
+    expect(intent.category).toBe("smart watches");
+    expect(intent.maxBudgetXsgd).toBe(20);
+    expect(intent.preferences).toContain("trusted merchant");
+    expect(results.length).toBeGreaterThan(0);
+    expect(results.every((product) => product.category === "smart watches")).toBe(true);
+  });
+
+  it("maps broad internet shopping language to purchaseable merchant categories", () => {
+    const intent = parseIntentDeterministically("Compare Nike running shoes under 35 SGD");
+    const results = searchCatalogue({
+      q: intent.query,
+      category: intent.category,
+      maxPrice: intent.maxBudgetXsgd,
+    });
+
+    expect(intent.category).toBe("fitness gear");
+    expect(intent.maxBudgetXsgd).toBe(35);
+    expect(intent.preferences).toContain("compare options");
+    expect(results.length).toBeGreaterThan(0);
+    expect(results.every((product) => product.category === "fitness gear")).toBe(true);
+  });
+
   it("filters products by category, stock and budget", () => {
     const results = searchCatalogue({ q: "wireless earbuds", category: "earbuds", maxPrice: 6 });
 

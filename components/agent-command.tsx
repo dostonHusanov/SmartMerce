@@ -13,10 +13,12 @@ import { WalletStatus } from "@/components/wallet-status";
 import type { ActivityLogEntry, AgentRunResult, AgentStep, PurchaseAuthorization as Authorization } from "@/types";
 
 const suggestions = [
-  "Best earbuds under 6 XSGD",
-  "Find a wireless mouse under 8 XSGD",
-  "Find the best USB-C charger under 5 XSGD",
-  "Best value keyboard under 10 XSGD",
+  "Buy me a phone holder under 6 XSGD",
+  "Find an Apple Watch alternative under 10 XSGD",
+  "Compare running shoes under 10 XSGD",
+  "Find a desk lamp under 9 XSGD",
+  "Get me a backpack under 18 XSGD",
+  "Find a notebook under 4 XSGD",
 ];
 
 const initialSteps: AgentStep[] = [
@@ -49,7 +51,7 @@ function createActivity(message: string): ActivityLogEntry {
 }
 
 export function AgentCommand() {
-  const [command, setCommand] = useState("Find me the best wireless earbuds under 6 XSGD.\nPrioritize rating and value.");
+  const [command, setCommand] = useState("Buy me a phone holder under 6 XSGD.\nPrioritize rating, value and fast shipping.");
   const [result, setResult] = useState<AgentRunResult>();
   const [visibleSteps, setVisibleSteps] = useState<AgentStep[]>(initialSteps);
   const [loading, setLoading] = useState(false);
@@ -79,8 +81,8 @@ export function AgentCommand() {
 
   const helperMessage = useMemo(() => {
     if (error) return error;
-    if (noProducts && budgetTooLow) return "No trusted catalogue products fit that budget. Try a slightly higher XSGD limit.";
-    if (noProducts) return "No products found in the trusted catalogue. Try earbuds, mouse, keyboard, charger or USB-C cable.";
+    if (noProducts && budgetTooLow) return "No supported merchant products fit that budget. Try a slightly higher XSGD limit.";
+    if (noProducts) return "No supported merchant product matched yet. Try a clearer item type, for example desk lamp, watch, shoes, backpack, charger or phone holder.";
     if (hasNoBudget) return "No budget detected. SmartMerce can compare products, but policy will be clearer with a maximum XSGD amount.";
     return undefined;
   }, [budgetTooLow, error, hasNoBudget, noProducts]);
@@ -151,17 +153,17 @@ export function AgentCommand() {
                 <h2 className="text-sm font-semibold uppercase tracking-[0.18em]">Shopping request</h2>
               </div>
               <p className="mt-2 text-sm leading-6 text-muted">
-                Describe the product, budget and preference. Results come from the merchant catalogue, not a static canned answer.
+                Ask for almost any everyday product. SmartMerce maps the request to supported merchants, compares options and prepares a purchase only after approval.
               </p>
             </div>
             <div className="shrink-0 rounded-full border border-accent/30 bg-accent/10 px-3 py-1 text-xs font-bold uppercase tracking-[0.12em] text-accent">
-              Live catalogue
+              Agent discovery
             </div>
           </div>
           <textarea
             value={command}
             onChange={(event) => setCommand(event.target.value)}
-            placeholder="Find me the best wireless earbuds under 6 XSGD."
+            placeholder="Buy me a desk lamp under 9 XSGD."
             className="focus-ring mt-5 min-h-28 w-full resize-y rounded-lg border border-line bg-black/30 p-4 text-base leading-7 text-ink placeholder:text-muted sm:min-h-32 sm:p-5 sm:text-lg sm:leading-8"
           />
           <div className="mt-4 flex flex-wrap gap-2">
@@ -187,7 +189,7 @@ export function AgentCommand() {
           </button>
           <div className="mt-4 flex items-center gap-2 text-xs text-muted">
             <ShieldCheck size={14} className="text-accent" />
-            AI can recommend. Spending policy is deterministic.
+            AI can discover and rank products. Spending policy and payment verification stay deterministic.
           </div>
         </section>
 
@@ -200,7 +202,7 @@ export function AgentCommand() {
             <div className="mb-4 flex items-end justify-between gap-3">
               <div>
                 <h2 className="text-xl font-semibold text-ink">Top Products</h2>
-                <p className="mt-1 text-sm text-muted">{result.products.length} products discovered from trusted merchants</p>
+                <p className="mt-1 text-sm text-muted">{result.products.length} products discovered from supported merchants</p>
               </div>
               <span className="rounded-full border border-line px-3 py-1 text-xs text-muted">Top 3 ranked</span>
             </div>
@@ -226,7 +228,7 @@ export function AgentCommand() {
         <section className="glass rounded-lg p-5">
           <div className="text-xs uppercase tracking-[0.18em] text-muted">AI Provider</div>
           <div className="mt-2 text-sm font-semibold text-ink">{result?.provider ?? "deterministic-fallback"}</div>
-          <p className="mt-3 text-xs leading-5 text-muted">External model adapters can be added without changing the policy engine.</p>
+          <p className="mt-3 text-xs leading-5 text-muted">Provider adapters can be added later without changing policy, payment or merchant verification.</p>
         </section>
       </aside>
     </div>

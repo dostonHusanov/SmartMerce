@@ -1,4 +1,5 @@
 export type ProductCategory =
+  | "smart watches"
   | "earbuds"
   | "headphones"
   | "mouse"
@@ -6,7 +7,12 @@ export type ProductCategory =
   | "usb-c cables"
   | "chargers"
   | "phone accessories"
-  | "power banks";
+  | "power banks"
+  | "desk accessories"
+  | "fitness gear"
+  | "bags"
+  | "stationery"
+  | "home accessories";
 
 export type Product = {
   id: string;

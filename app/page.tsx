@@ -3,8 +3,8 @@ import { Brain, CheckCircle2, CreditCard, LockKeyhole, PackageCheck, Search, Shi
 
 const demoFlow = [
   ["Intent", "Natural language request", Brain],
-  ["Discover", "Trusted merchant catalogue", Search],
-  ["Recommend", "Best value product", CheckCircle2],
+  ["Discover", "Supported merchant search", Search],
+  ["Compare", "Ranked product options", CheckCircle2],
   ["Policy", "Limits and verification", ShieldCheck],
   ["Authorize", "User approval required", LockKeyhole],
   ["Execute", "Wallet or card rail", WalletCards],
@@ -12,14 +12,14 @@ const demoFlow = [
 ] satisfies Array<[string, string, LucideIcon]>;
 
 const pillars = [
-  ["INTELLIGENCE", "Product discovery and comparison across a trusted catalogue.", Brain],
+  ["INTELLIGENCE", "Open-ended product intent mapped to supported merchant rails.", Brain],
   ["CONTROL", "Programmable spending policies, merchant allowlists and exact-amount authorization.", ShieldCheck],
   ["FULFILLMENT", "Orders can hand off to a merchant backend after verified payment proof.", CreditCard],
 ] satisfies Array<[string, string, LucideIcon]>;
 
 const commerceMetrics = [
-  ["18", "catalogue items"],
-  ["3", "trusted merchants"],
+  ["28", "merchant items"],
+  ["4", "trusted merchants"],
   ["43114", "Avalanche C-Chain"],
   ["Shopify", "fulfillment-ready"],
 ];
@@ -51,10 +51,10 @@ export default function Home() {
             </div>
           </div>
           <h1 className="max-w-4xl text-4xl font-semibold leading-tight text-ink sm:text-5xl md:text-6xl">
-            Ask for a product. SmartMerce prepares a verified order.
+            Ask for a product. SmartMerce discovers, compares and buys.
           </h1>
           <p className="mt-5 max-w-3xl text-base leading-7 text-muted sm:text-lg">
-            The agent finds catalogue products, checks policy, requests a wallet action, and prepares merchant fulfillment only after payment proof exists.
+            The agent turns a natural-language shopping request into ranked product options, explicit approval, XSGD payment proof and a merchant order.
           </p>
           <div className="mt-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
             {commerceMetrics.map(([value, label]) => (
@@ -75,7 +75,7 @@ export default function Home() {
           </p>
           <div className="mt-5 grid gap-2 text-sm">
             {[
-              ["Product search", "Catalogue-backed results"],
+              ["Product search", "Supported merchant results"],
               ["Payment", "XSGD transfer proof"],
               ["Order", "Fulfillment adapter ready"],
             ].map(([label, value]) => (

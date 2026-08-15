@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 export const productCategorySchema = z.enum([
+  "smart watches",
   "earbuds",
   "headphones",
   "mouse",
@@ -9,6 +10,11 @@ export const productCategorySchema = z.enum([
   "chargers",
   "phone accessories",
   "power banks",
+  "desk accessories",
+  "fitness gear",
+  "bags",
+  "stationery",
+  "home accessories",
 ]);
 
 export const shoppingIntentSchema = z.object({
