@@ -1,0 +1,360 @@
+import type { Product, ProductCategory } from "@/types";
+
+export const trustedMerchantIds = [
+  "merce-demo",
+  "urban-byte",
+  "circuit-sg",
+  "northstar-mobile",
+];
+
+export const products: Product[] = [
+  {
+    id: "prod-ear-001",
+    sku: "SMB-AIRMINI-01",
+    name: "Soundcore Mini Buds",
+    description: "Compact wireless earbuds with punchy sound and clear calls.",
+    category: "earbuds",
+    merchant: "SmartMerce Demo Store",
+    merchantId: "merce-demo",
+    priceXsgd: 4.9,
+    rating: 4.7,
+    reviewCount: 824,
+    shippingEstimate: "Same day",
+    image: "https://images.unsplash.com/photo-1608156639585-b3a032ef9689?auto=format&fit=crop&w=900&q=80",
+    inStock: true,
+    inventory: 42,
+  },
+  {
+    id: "prod-ear-002",
+    sku: "UB-AERO-02",
+    name: "AeroLite Earbuds",
+    description: "Lightweight buds tuned for podcasts, commuting and calls.",
+    category: "earbuds",
+    merchant: "Urban Byte SG",
+    merchantId: "urban-byte",
+    priceXsgd: 5.8,
+    rating: 4.8,
+    reviewCount: 312,
+    shippingEstimate: "Tomorrow",
+    image: "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&w=900&q=80",
+    inStock: true,
+    inventory: 18,
+  },
+  {
+    id: "prod-ear-003",
+    sku: "CS-QUIET-03",
+    name: "QuietPod Basic",
+    description: "Entry wireless earbuds with balanced audio and pocket case.",
+    category: "earbuds",
+    merchant: "Circuit Supply SG",
+    merchantId: "circuit-sg",
+    priceXsgd: 3.7,
+    rating: 4.3,
+    reviewCount: 553,
+    shippingEstimate: "2 days",
+    image: "https://images.unsplash.com/photo-1627989580309-bfaf3e58af6f?auto=format&fit=crop&w=900&q=80",
+    inStock: true,
+    inventory: 27,
+  },
+  {
+    id: "prod-ear-004",
+    sku: "NS-EDGE-04",
+    name: "EdgeCall Buds",
+    description: "Wireless earbuds with call-focused microphones.",
+    category: "earbuds",
+    merchant: "Northstar Mobile",
+    merchantId: "northstar-mobile",
+    priceXsgd: 6.4,
+    rating: 4.9,
+    reviewCount: 140,
+    shippingEstimate: "Same day",
+    image: "https://images.unsplash.com/photo-1612444530582-fc66183b16f8?auto=format&fit=crop&w=900&q=80",
+    inStock: true,
+    inventory: 9,
+  },
+  {
+    id: "prod-head-001",
+    sku: "UB-COMFORT-01",
+    name: "ComfortBand Headphones",
+    description: "Foldable headphones with soft pads for study sessions.",
+    category: "headphones",
+    merchant: "Urban Byte SG",
+    merchantId: "urban-byte",
+    priceXsgd: 9.6,
+    rating: 4.5,
+    reviewCount: 228,
+    shippingEstimate: "Tomorrow",
+    image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=900&q=80",
+    inStock: true,
+    inventory: 13,
+  },
+  {
+    id: "prod-mouse-001",
+    sku: "CS-GLIDE-01",
+    name: "Glide Wireless Mouse",
+    description: "Compact wireless mouse with silent clicks and USB receiver.",
+    category: "mouse",
+    merchant: "Circuit Supply SG",
+    merchantId: "circuit-sg",
+    priceXsgd: 6.9,
+    rating: 4.6,
+    reviewCount: 491,
+    shippingEstimate: "Same day",
+    image: "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?auto=format&fit=crop&w=900&q=80",
+    inStock: true,
+    inventory: 35,
+  },
+  {
+    id: "prod-mouse-002",
+    sku: "SMB-TRAVEL-02",
+    name: "TravelClick Mouse",
+    description: "Slim travel mouse with Bluetooth pairing.",
+    category: "mouse",
+    merchant: "SmartMerce Demo Store",
+    merchantId: "merce-demo",
+    priceXsgd: 7.8,
+    rating: 4.4,
+    reviewCount: 187,
+    shippingEstimate: "2 days",
+    image: "https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?auto=format&fit=crop&w=900&q=80",
+    inStock: true,
+    inventory: 20,
+  },
+  {
+    id: "prod-key-001",
+    sku: "UB-KEYLITE-01",
+    name: "KeyLite Compact Keyboard",
+    description: "Low-profile keyboard for desk and tablet workflows.",
+    category: "keyboard",
+    merchant: "Urban Byte SG",
+    merchantId: "urban-byte",
+    priceXsgd: 9.2,
+    rating: 4.6,
+    reviewCount: 344,
+    shippingEstimate: "Tomorrow",
+    image: "https://images.unsplash.com/photo-1587829741301-dc798b83add3?auto=format&fit=crop&w=900&q=80",
+    inStock: true,
+    inventory: 16,
+  },
+  {
+    id: "prod-key-002",
+    sku: "CS-MECHMINI-02",
+    name: "MechMini Starter Keyboard",
+    description: "Small wired mechanical keyboard with tactile switches.",
+    category: "keyboard",
+    merchant: "Circuit Supply SG",
+    merchantId: "circuit-sg",
+    priceXsgd: 10.8,
+    rating: 4.8,
+    reviewCount: 96,
+    shippingEstimate: "2 days",
+    image: "https://images.unsplash.com/photo-1595225476474-87563907a212?auto=format&fit=crop&w=900&q=80",
+    inStock: true,
+    inventory: 8,
+  },
+  {
+    id: "prod-cable-001",
+    sku: "NS-C60-01",
+    name: "Flex USB-C Cable 60W",
+    description: "Braided one-meter USB-C cable for charging and sync.",
+    category: "usb-c cables",
+    merchant: "Northstar Mobile",
+    merchantId: "northstar-mobile",
+    priceXsgd: 2.4,
+    rating: 4.5,
+    reviewCount: 1021,
+    shippingEstimate: "Same day",
+    image: "https://images.unsplash.com/photo-1618331835717-801e976710b2?auto=format&fit=crop&w=900&q=80",
+    inStock: true,
+    inventory: 64,
+  },
+  {
+    id: "prod-cable-002",
+    sku: "SMB-C100-02",
+    name: "RapidLink USB-C Cable 100W",
+    description: "Durable fast-charge cable rated for laptops and tablets.",
+    category: "usb-c cables",
+    merchant: "SmartMerce Demo Store",
+    merchantId: "merce-demo",
+    priceXsgd: 3.9,
+    rating: 4.8,
+    reviewCount: 717,
+    shippingEstimate: "Tomorrow",
+    image: "https://images.unsplash.com/photo-1583863788434-e58a36330cf0?auto=format&fit=crop&w=900&q=80",
+    inStock: true,
+    inventory: 31,
+  },
+  {
+    id: "prod-chg-001",
+    sku: "CS-POCKET20-01",
+    name: "PocketWall 20W Charger",
+    description: "Single-port compact charger for phones and earbuds.",
+    category: "chargers",
+    merchant: "Circuit Supply SG",
+    merchantId: "circuit-sg",
+    priceXsgd: 4.8,
+    rating: 4.6,
+    reviewCount: 661,
+    shippingEstimate: "Same day",
+    image: "https://images.unsplash.com/photo-1586253634026-8cb574908d1d?auto=format&fit=crop&w=900&q=80",
+    inStock: true,
+    inventory: 25,
+  },
+  {
+    id: "prod-chg-002",
+    sku: "UB-DUO30-02",
+    name: "DuoPort 30W Charger",
+    description: "Two-port charger with USB-C and USB-A output.",
+    category: "chargers",
+    merchant: "Urban Byte SG",
+    merchantId: "urban-byte",
+    priceXsgd: 7.4,
+    rating: 4.7,
+    reviewCount: 389,
+    shippingEstimate: "Tomorrow",
+    image: "https://images.unsplash.com/photo-1625750319971-ee4cafe1f571?auto=format&fit=crop&w=900&q=80",
+    inStock: true,
+    inventory: 17,
+  },
+  {
+    id: "prod-phone-001",
+    sku: "NS-MAGSTAND-01",
+    name: "MagStand Phone Holder",
+    description: "Foldable magnetic desk stand for phones.",
+    category: "phone accessories",
+    merchant: "Northstar Mobile",
+    merchantId: "northstar-mobile",
+    priceXsgd: 5.2,
+    rating: 4.4,
+    reviewCount: 275,
+    shippingEstimate: "2 days",
+    image: "https://images.unsplash.com/photo-1616410011236-7a42121dd981?auto=format&fit=crop&w=900&q=80",
+    inStock: true,
+    inventory: 22,
+  },
+  {
+    id: "prod-phone-002",
+    sku: "SMB-CLEAR-02",
+    name: "ClearGrip Phone Case",
+    description: "Transparent protective case with raised edges.",
+    category: "phone accessories",
+    merchant: "SmartMerce Demo Store",
+    merchantId: "merce-demo",
+    priceXsgd: 3.2,
+    rating: 4.3,
+    reviewCount: 532,
+    shippingEstimate: "Same day",
+    image: "https://images.unsplash.com/photo-1603313011101-320f26a4f6f6?auto=format&fit=crop&w=900&q=80",
+    inStock: false,
+    inventory: 0,
+  },
+  {
+    id: "prod-power-001",
+    sku: "UB-SLIM5K-01",
+    name: "SlimCell 5000 Power Bank",
+    description: "Pocket-sized 5000mAh power bank with USB-C input.",
+    category: "power banks",
+    merchant: "Urban Byte SG",
+    merchantId: "urban-byte",
+    priceXsgd: 8.9,
+    rating: 4.6,
+    reviewCount: 421,
+    shippingEstimate: "Tomorrow",
+    image: "https://images.unsplash.com/photo-1609091839311-d5365f9ff1c5?auto=format&fit=crop&w=900&q=80",
+    inStock: true,
+    inventory: 11,
+  },
+  {
+    id: "prod-power-002",
+    sku: "CS-CARD3K-02",
+    name: "CardCell 3000 Power Bank",
+    description: "Thin emergency battery pack for light top-ups.",
+    category: "power banks",
+    merchant: "Circuit Supply SG",
+    merchantId: "circuit-sg",
+    priceXsgd: 6.6,
+    rating: 4.2,
+    reviewCount: 198,
+    shippingEstimate: "2 days",
+    image: "https://images.unsplash.com/photo-1619489646924-b4fce76b1db5?auto=format&fit=crop&w=900&q=80",
+    inStock: true,
+    inventory: 15,
+  },
+  {
+    id: "prod-head-002",
+    sku: "NS-STUDY-02",
+    name: "StudyTone Wired Headphones",
+    description: "Reliable wired headphones with inline microphone.",
+    category: "headphones",
+    merchant: "Northstar Mobile",
+    merchantId: "northstar-mobile",
+    priceXsgd: 5.5,
+    rating: 4.2,
+    reviewCount: 367,
+    shippingEstimate: "Same day",
+    image: "https://images.unsplash.com/photo-1487215078519-e21cc028cb29?auto=format&fit=crop&w=900&q=80",
+    inStock: false,
+    inventory: 0,
+  },
+];
+
+type CatalogueStore = {
+  products: Map<string, Product>;
+};
+
+const globalCatalogueStore = globalThis as typeof globalThis & {
+  __smartmerceCatalogueStore?: CatalogueStore;
+};
+
+const catalogueStore = globalCatalogueStore.__smartmerceCatalogueStore ??= {
+  products: new Map(products.map((product) => [product.id, { ...product }])),
+};
+
+export function listProducts() {
+  return [...catalogueStore.products.values()];
+}
+
+export function getProductById(id: string) {
+  return catalogueStore.products.get(id);
+}
+
+export function reserveProductInventory(id: string) {
+  const product = getProductById(id);
+  if (!product) throw new Error("Product not found.");
+  if (!product.inStock || product.inventory <= 0) throw new Error("Product is out of stock.");
+
+  const updated = {
+    ...product,
+    inventory: product.inventory - 1,
+    inStock: product.inventory - 1 > 0,
+  };
+  catalogueStore.products.set(id, updated);
+  return updated;
+}
+
+export function searchCatalogue(input: {
+  q?: string;
+  category?: ProductCategory;
+  maxPrice?: number;
+  sort?: string;
+  includeOutOfStock?: boolean;
+}) {
+  const q = input.q?.toLowerCase().trim();
+  const words = q?.split(/\s+/).filter(Boolean) ?? [];
+
+  const filtered = listProducts().filter((product) => {
+    const haystack = `${product.name} ${product.description} ${product.category}`.toLowerCase();
+    const matchesQuery = !words.length || words.some((word) => haystack.includes(word));
+    const matchesCategory = !input.category || product.category === input.category;
+    const matchesBudget = input.maxPrice === undefined || product.priceXsgd <= input.maxPrice;
+    const matchesStock = input.includeOutOfStock || product.inStock;
+    return matchesQuery && matchesCategory && matchesBudget && matchesStock;
+  });
+
+  return [...filtered].sort((a, b) => {
+    if (input.sort === "price") return a.priceXsgd - b.priceXsgd;
+    if (input.sort === "rating") return b.rating - a.rating;
+    if (input.sort === "value") return b.rating / b.priceXsgd - a.rating / a.priceXsgd;
+    return b.rating * Math.log10(b.reviewCount + 10) - a.rating * Math.log10(a.reviewCount + 10);
+  });
+}
