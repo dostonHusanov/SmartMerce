@@ -4,9 +4,9 @@ import { WalletStatus } from "@/components/wallet-status";
 
 export function Header() {
   const navItems = [
-    ["Shop", "/"],
-    ["Merchant", "/merchant"],
-    ["Architecture", "/architecture"],
+    ["Shopper", "/"],
+    ["Store", "/merchant"],
+    ["How it works", "/architecture"],
   ];
 
   return (
@@ -14,7 +14,7 @@ export function Header() {
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:px-6 md:gap-6 md:py-4">
         <Link href="/" className="min-w-0">
           <div className="text-base font-semibold tracking-[0.08em] text-ink sm:text-lg">SMARTMERCE</div>
-          <div className="text-[10px] uppercase tracking-[0.18em] text-muted sm:text-xs">AI Commerce Agent</div>
+          <div className="text-[10px] uppercase tracking-[0.18em] text-muted sm:text-xs">AI Shopping Agent</div>
         </Link>
         <nav className="hidden items-center gap-2 rounded-full border border-line bg-white/[0.03] p-1 md:flex">
           {navItems.map(([label, href]) => (

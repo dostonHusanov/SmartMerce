@@ -18,17 +18,17 @@ export default function MerchantPage() {
       <section className="mb-8 grid gap-6 lg:grid-cols-[1fr_380px] lg:items-end">
         <div>
           <div className="mb-4 inline-flex rounded-full border border-accent/30 bg-accent/10 px-4 py-2 text-sm font-medium text-accent">
-            SMARTMERCE MERCHANT CONSOLE
+            STORE DASHBOARD
           </div>
-          <h1 className="text-4xl font-semibold text-ink">Orders, catalogue and AI purchase activity</h1>
+          <h1 className="text-4xl font-semibold text-ink">Products, orders and AI shopping activity</h1>
           <p className="mt-3 max-w-2xl text-sm leading-6 text-muted">
-            Merchant-side verification for agent-originated purchases. Orders only appear after SmartMerce verifies authorization and payment proof.
+            The store view shows what happened after the shopper approves. Orders appear only after SmartMerce verifies payment proof.
           </p>
         </div>
         <div className="glass rounded-lg p-5">
-          <div className="text-xs uppercase tracking-[0.18em] text-muted">Recent transactions</div>
+          <div className="text-xs uppercase tracking-[0.18em] text-muted">Verified orders</div>
           <div className="mt-3 text-3xl font-semibold text-accent">{orders.length}</div>
-          <p className="mt-2 text-sm text-muted">No fabricated transactions are displayed. Blockchain hashes appear only after real payment proof exists.</p>
+          <p className="mt-2 text-sm text-muted">No fake payment hashes are shown. Blockchain proof appears only after a real transfer is verified.</p>
         </div>
       </section>
 
@@ -36,8 +36,8 @@ export default function MerchantPage() {
         {([
           ["Products", products.length, Boxes],
           ["Revenue XSGD", Number(revenueXsgd.toFixed(2)), WalletCards],
-          ["AI purchases", aiPurchases, ReceiptText],
-          ["Pending authorizations", authorizations.length, Clock3],
+          ["AI orders", aiPurchases, ReceiptText],
+          ["Waiting for approval", authorizations.length, Clock3],
         ] satisfies Array<[string, number, LucideIcon]>).map(([label, value, Icon]) => (
           <section key={String(label)} className="glass rounded-lg p-5">
             <Icon className="text-accent" size={20} />
@@ -87,7 +87,7 @@ export default function MerchantPage() {
 
         <aside className="space-y-6">
           <section className="glass rounded-lg p-5">
-            <h2 className="text-sm font-semibold uppercase tracking-[0.18em] text-ink">Pending Authorizations</h2>
+            <h2 className="text-sm font-semibold uppercase tracking-[0.18em] text-ink">Waiting for Shopper Approval</h2>
             <div className="mt-5 space-y-3">
               {authorizations.length ? (
                 authorizations.slice(0, 4).map((authorization) => (
@@ -99,7 +99,7 @@ export default function MerchantPage() {
                 ))
               ) : (
                 <div className="rounded-md border border-line bg-white/[0.03] p-4 text-sm text-muted">
-                  Authorizations appear here after user approval. Payment execution requires a separate explicit action.
+                  Purchases appear here after a shopper approves an item. Payment still requires a separate wallet confirmation.
                 </div>
               )}
             </div>
@@ -109,9 +109,9 @@ export default function MerchantPage() {
             <div className="mt-5 space-y-3 text-sm">
               {[
                 `${inStock} products currently available`,
-                "Merchant allowlist verified",
-                "Server-side prices are source of truth",
-                "Orders require authorization and payment proof",
+                "Trusted stores verified",
+                "Prices checked before payment",
+                "Orders require approval and payment proof",
               ].map((item) => (
                 <div key={item} className="rounded-md bg-white/[0.04] px-4 py-3 text-muted">
                   <Activity size={14} className="mr-2 inline text-accent" />
@@ -181,7 +181,7 @@ export default function MerchantPage() {
         ) : (
           <div className="p-6">
             <div className="rounded-lg border border-line bg-white/[0.03] p-5 text-sm leading-6 text-muted">
-              No verified orders yet. Run the main SmartMerce flow, authorize a purchase, then complete a configured payment to create the first merchant order.
+              No verified orders yet. Run the shopper flow, approve a product, then complete wallet payment to create the first store order.
             </div>
           </div>
         )}

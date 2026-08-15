@@ -32,32 +32,32 @@ export function evaluateSpendingPolicy(input: {
   const dailySpend = input.dailySpendXsgd ?? 0;
 
   const checks: PolicyCheck[] = [
-    check("positive_amount", "Positive amount", input.amount > 0, "Amount must be greater than 0 XSGD."),
+    check("positive_amount", "Real price", input.amount > 0, "The item must have a valid XSGD price."),
     check(
       "transaction_limit",
-      `Within ${defaultSpendingPolicy.maxTransactionXsgd} XSGD transaction limit`,
+      "Within your limit",
       input.amount <= defaultSpendingPolicy.maxTransactionXsgd,
-      `${input.amount.toFixed(2)} XSGD requested against a ${defaultSpendingPolicy.maxTransactionXsgd} XSGD limit.`,
+      `${input.amount.toFixed(2)} XSGD is checked against your ${defaultSpendingPolicy.maxTransactionXsgd} XSGD limit.`,
     ),
     check(
       "daily_limit",
       "Daily budget available",
       dailySpend + input.amount <= defaultSpendingPolicy.dailyLimitXsgd,
-      `${(dailySpend + input.amount).toFixed(2)} XSGD projected daily spend against ${defaultSpendingPolicy.dailyLimitXsgd} XSGD.`,
+      `Today total would be ${(dailySpend + input.amount).toFixed(2)} XSGD out of ${defaultSpendingPolicy.dailyLimitXsgd} XSGD.`,
     ),
     check(
       "merchant_allowlist",
-      "Trusted merchant",
+      "Store is trusted",
       defaultSpendingPolicy.allowedMerchantIds.includes(input.merchantId),
-      `${input.merchantId} must be in the trusted merchant allowlist.`,
+      "The store must be approved before payment.",
     ),
-    check("product_exists", "Product exists", Boolean(product), "Product must exist in the trusted catalogue."),
-    check("in_stock", "Product available", Boolean(product?.inStock), "Product must be in stock."),
+    check("product_exists", "Item is available", Boolean(product), "The item must be available for checkout."),
+    check("in_stock", "In stock", Boolean(product?.inStock), "The item must be in stock."),
     check(
       "price_verified",
-      "Price verified",
+      "Price confirmed",
       serverPrice !== undefined && Math.abs(serverPrice - input.amount) < 0.001,
-      "Requested amount must match the server-side catalogue price.",
+      "The payment amount must match the verified item price.",
     ),
     check(
       "requested_budget",

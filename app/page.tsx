@@ -2,19 +2,19 @@ import { AgentCommand } from "@/components/agent-command";
 import { Brain, CheckCircle2, CreditCard, LockKeyhole, PackageCheck, Search, ShieldCheck, Store, Truck, WalletCards, type LucideIcon } from "lucide-react";
 
 const demoFlow = [
-  ["Intent", "Natural language request", Brain],
-  ["Discover", "Supported merchant search", Search],
-  ["Compare", "Ranked product options", CheckCircle2],
-  ["Policy", "Limits and verification", ShieldCheck],
-  ["Authorize", "User approval required", LockKeyhole],
-  ["Execute", "Wallet or card rail", WalletCards],
-  ["Confirm", "Merchant order proof", Store],
+  ["Ask", "Tell the agent what you want", Brain],
+  ["Find", "Search live store listings", Search],
+  ["Compare", "Show the best options", CheckCircle2],
+  ["Check", "Verify price and limits", ShieldCheck],
+  ["Approve", "You confirm the exact spend", LockKeyhole],
+  ["Pay", "Wallet sends XSGD", WalletCards],
+  ["Order", "Store receives proof", Store],
 ] satisfies Array<[string, string, LucideIcon]>;
 
 const pillars = [
-  ["INTELLIGENCE", "Open-ended product intent mapped to supported merchant rails.", Brain],
-  ["CONTROL", "Programmable spending policies, merchant allowlists and exact-amount authorization.", ShieldCheck],
-  ["FULFILLMENT", "Orders can hand off to a merchant backend after verified payment proof.", CreditCard],
+  ["ASK NATURALLY", "Users can ask for everyday products in plain language.", Brain],
+  ["STAY IN CONTROL", "The agent cannot spend until the user approves an exact amount.", ShieldCheck],
+  ["READY FOR STORES", "Verified payments can hand off to a real merchant backend.", CreditCard],
 ] satisfies Array<[string, string, LucideIcon]>;
 
 const commerceMetrics = [
@@ -44,17 +44,17 @@ export default function Home() {
         <div className="glass rounded-lg p-5 md:p-7">
           <div className="mb-5 flex flex-wrap gap-2">
             <div className="inline-flex rounded-full border border-accent/30 bg-accent/10 px-4 py-2 text-sm font-medium text-accent">
-              SmartMerce marketplace
+              Shopper demo
             </div>
             <div className="inline-flex rounded-full border border-violet/30 bg-violet/10 px-4 py-2 text-sm font-medium text-violet">
-              Real payment, explicit approval
+              Mainnet XSGD ready
             </div>
           </div>
           <h1 className="max-w-4xl text-4xl font-semibold leading-tight text-ink sm:text-5xl md:text-6xl">
-            Ask for a product. SmartMerce discovers, compares and buys.
+            Tell SmartMerce what to buy. It finds options and asks before paying.
           </h1>
           <p className="mt-5 max-w-3xl text-base leading-7 text-muted sm:text-lg">
-            The agent turns a natural-language shopping request into ranked product options, explicit approval, XSGD payment proof and a merchant order.
+            A simple shopping agent for real people: search live products, compare choices, approve the exact spend, then pay with XSGD.
           </p>
           <div className="mt-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
             {commerceMetrics.map(([value, label]) => (
@@ -68,16 +68,16 @@ export default function Home() {
         <div className="glass rounded-lg p-5">
           <div className="flex items-center gap-2 text-accent">
             <Truck size={18} />
-            <div className="text-sm font-semibold uppercase tracking-[0.18em] text-ink">Commerce boundary</div>
+            <div className="text-sm font-semibold uppercase tracking-[0.18em] text-ink">What is real?</div>
           </div>
           <p className="mt-3 text-sm leading-6 text-muted">
-            SmartMerce does not claim a real shipment unless a merchant fulfillment backend confirms the order.
+            SmartMerce can search live products and verify payments. Shipment happens only when a connected store confirms fulfillment.
           </p>
           <div className="mt-5 grid gap-2 text-sm">
             {[
-              ["Product search", "Supported merchant results"],
-              ["Payment", "XSGD transfer proof"],
-              ["Order", "Fulfillment adapter ready"],
+              ["Products", "Live store results"],
+              ["Payment", "Verified XSGD transfer"],
+              ["Delivery", "Store integration ready"],
             ].map(([label, value]) => (
               <div key={label} className="flex items-center justify-between gap-3 rounded-md border border-line bg-white/[0.04] px-3 py-3">
                 <span className="text-muted">{label}</span>
@@ -93,7 +93,7 @@ export default function Home() {
       <section className="glass mt-8 rounded-lg p-4 md:p-5">
         <div className="mb-4 flex items-center gap-2 text-accent">
           <PackageCheck size={18} />
-          <h2 className="text-sm font-semibold uppercase tracking-[0.18em] text-ink">Purchase pipeline</h2>
+          <h2 className="text-sm font-semibold uppercase tracking-[0.18em] text-ink">How a purchase works</h2>
         </div>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-7">
           {demoFlow.map(([label, detail, Icon], index) => (
@@ -111,15 +111,15 @@ export default function Home() {
 
       <section className="mt-10 grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
         <div className="glass rounded-lg p-6">
-          <div className="text-sm font-semibold uppercase tracking-[0.18em] text-accent">Why SmartMerce</div>
+            <div className="text-sm font-semibold uppercase tracking-[0.18em] text-accent">Why SmartMerce</div>
           <div className="mt-6 grid gap-4">
             <div>
               <h2 className="text-2xl font-semibold text-ink">Today</h2>
-              <p className="mt-2 text-sm leading-6 text-muted">AI can tell you what to buy.</p>
+              <p className="mt-2 text-sm leading-6 text-muted">AI usually only recommends products.</p>
             </div>
             <div>
               <h2 className="text-2xl font-semibold text-ink">SmartMerce</h2>
-              <p className="mt-2 text-sm leading-6 text-muted">AI can discover, compare and execute commerce safely.</p>
+              <p className="mt-2 text-sm leading-6 text-muted">SmartMerce helps complete the purchase with user approval and payment proof.</p>
             </div>
           </div>
         </div>
@@ -138,7 +138,7 @@ export default function Home() {
         <div className="mb-5 flex flex-wrap items-end justify-between gap-4">
           <div>
             <div className="text-sm font-semibold uppercase tracking-[0.18em] text-accent">Security boundary</div>
-            <h2 className="mt-3 text-3xl font-semibold text-ink">The LLM never gets spending authority.</h2>
+            <h2 className="mt-3 text-3xl font-semibold text-ink">The AI can search, but only the user can approve payment.</h2>
           </div>
           <div className="rounded-full border border-accent/30 bg-accent/10 px-4 py-2 text-xs font-bold uppercase tracking-[0.14em] text-accent">
             Deterministic controls

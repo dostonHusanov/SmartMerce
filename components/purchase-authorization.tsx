@@ -27,7 +27,7 @@ export function PurchaseAuthorization({
           <h2 className="text-lg font-semibold">PURCHASE AUTHORIZED</h2>
         </div>
         <p className="mt-3 text-sm leading-6 text-muted">
-          SmartMerce is ready to execute this purchase. Payment infrastructure will be connected in the next stage.
+          You approved this exact product and amount. The next step is the wallet payment confirmation.
         </p>
         <div className="mt-5 grid gap-3 text-sm sm:grid-cols-2">
           <div className="rounded-md bg-white/[0.04] p-3">
@@ -40,7 +40,7 @@ export function PurchaseAuthorization({
           </div>
         </div>
         <div className="mt-5 rounded-md border border-amber/30 bg-amber/10 px-4 py-3 text-sm font-medium text-amber">
-          PAYMENT READY
+          READY FOR WALLET PAYMENT
         </div>
       </section>
     );
@@ -50,7 +50,7 @@ export function PurchaseAuthorization({
     <Dialog.Root>
       <Dialog.Trigger asChild>
         <button className="focus-ring w-full rounded-lg bg-accent px-5 py-4 text-sm font-bold uppercase tracking-[0.16em] text-background transition hover:brightness-110">
-          Authorize Purchase
+          Approve This Product
         </button>
       </Dialog.Trigger>
       <Dialog.Portal>
@@ -58,9 +58,9 @@ export function PurchaseAuthorization({
         <Dialog.Content className="glass fixed left-1/2 top-1/2 z-50 w-[min(92vw,560px)] -translate-x-1/2 -translate-y-1/2 rounded-lg p-6">
           <div className="flex items-start justify-between gap-4">
             <div>
-              <Dialog.Title className="text-xl font-semibold text-ink">PURCHASE AUTHORIZATION</Dialog.Title>
+              <Dialog.Title className="text-xl font-semibold text-ink">Approve This Purchase</Dialog.Title>
               <Dialog.Description className="mt-2 text-sm text-muted">
-                Scoped to this product, merchant and exact amount for 5 minutes.
+                This approval is only for the product, store and amount shown below. It expires in 5 minutes.
               </Dialog.Description>
             </div>
             <Dialog.Close className="focus-ring rounded-full p-2 text-muted transition hover:bg-white/[0.06] hover:text-ink">
@@ -73,7 +73,7 @@ export function PurchaseAuthorization({
               ["Merchant", product.merchant],
               ["Amount", `${product.priceXsgd.toFixed(2)} XSGD`],
               ["Network", "Avalanche C-Chain"],
-              ["Spending limit", `${maxTransactionXsgd} XSGD`],
+              ["Max allowed", `${maxTransactionXsgd} XSGD`],
             ].map(([label, value]) => (
               <div key={label} className="flex items-center justify-between rounded-md bg-white/[0.04] px-4 py-3">
                 <dt className="text-muted">{label}</dt>
@@ -91,7 +91,7 @@ export function PurchaseAuthorization({
           </div>
           <div className="mt-6 grid grid-cols-2 gap-3">
             <Dialog.Close className="focus-ring rounded-lg border border-line px-4 py-3 text-sm font-semibold text-ink">
-              CANCEL
+              Not Now
             </Dialog.Close>
             <Dialog.Close
               onClick={() => {
@@ -99,7 +99,7 @@ export function PurchaseAuthorization({
               }}
               className="focus-ring rounded-lg bg-accent px-4 py-3 text-sm font-bold text-background"
             >
-              AUTHORIZE {product.priceXsgd.toFixed(2)} XSGD
+              Approve {product.priceXsgd.toFixed(2)} XSGD
             </Dialog.Close>
           </div>
         </Dialog.Content>

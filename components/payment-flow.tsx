@@ -8,13 +8,13 @@ import { StraitsXCardFunding } from "@/components/straitsx-card-funding";
 import type { DeliveryInfo, Order, PaymentState, PurchaseAuthorization, RankedProduct } from "@/types";
 
 const progressSteps = [
-  "Preparing purchase",
-  "Validating spending policy",
-  "Preparing payment method",
-  "Awaiting wallet authorization",
-  "Transaction submitted",
-  "Confirming payment",
-  "Order confirmed",
+  "Prepare order",
+  "Check safety",
+  "Set payment",
+  "Wallet approval",
+  "Send payment",
+  "Verify payment",
+  "Confirm order",
 ];
 
 export function PaymentFlow({
@@ -25,7 +25,7 @@ export function PaymentFlow({
   product?: RankedProduct;
 }) {
   const [state, setState] = useState<PaymentState>("IDLE");
-  const [message, setMessage] = useState("Payment infrastructure is ready for explicit user action.");
+  const [message, setMessage] = useState("Ready when you are. SmartMerce will ask your wallet before sending any XSGD.");
   const [hash, setHash] = useState<`0x${string}`>();
   const [order, setOrder] = useState<Order>();
   const [busy, setBusy] = useState(false);
@@ -63,7 +63,7 @@ export function PaymentFlow({
   async function executeDirectXsgd() {
     setBusy(true);
     setState("PREPARING");
-    setMessage("Preparing payment method.");
+    setMessage("Preparing your checkout.");
 
     try {
       if (!product || !authorization) throw new Error("Purchase authorization is required.");
@@ -80,7 +80,7 @@ export function PaymentFlow({
       const buyerWallet = await connectWallet();
 
       setState("VALIDATING");
-      setMessage("Checking Avalanche C-Chain, XSGD balance and AVAX gas.");
+      setMessage("Checking network, XSGD balance and gas.");
       const chainId = await getChainId(provider);
       if (chainId !== avalancheNetworkConfig.chainId) {
         throw new Error("Switch to Avalanche C-Chain to continue.");
@@ -94,8 +94,8 @@ export function PaymentFlow({
       const merchantIsBuyer = buyerWallet.toLowerCase() === merchantWallet.toLowerCase();
       setState("AWAITING_USER_SIGNATURE");
       setMessage(merchantIsBuyer
-        ? "Your wallet must explicitly sign the XSGD transfer. Merchant wallet is your own address, so net XSGD balance will not change; only gas is spent."
-        : "Your wallet must explicitly sign the XSGD transfer.");
+        ? "Your wallet will ask you to confirm. Because the merchant wallet is your own address, only gas is spent."
+        : "Your wallet will ask you to confirm the XSGD payment.");
       const transactionHash = await sendXsgdTransfer({
         from: buyerWallet,
         to: merchantWallet,
@@ -105,11 +105,11 @@ export function PaymentFlow({
       setHash(transactionHash);
 
       setState("SUBMITTED");
-      setMessage("Transaction submitted to Avalanche C-Chain Mainnet.");
+      setMessage("Payment sent to Avalanche C-Chain Mainnet.");
       await waitForTransaction(transactionHash);
 
       setState("CONFIRMING");
-      setMessage("Verifying the exact XSGD transfer event before creating the merchant order.");
+      setMessage("Verifying the payment before creating the merchant order.");
       const verified = await verifyXsgdTransferReceipt({
         hash: transactionHash,
         from: buyerWallet,
@@ -186,7 +186,7 @@ export function PaymentFlow({
     <section className="glass rounded-lg p-6">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h2 className="text-sm font-semibold uppercase tracking-[0.18em] text-ink">Payment Infrastructure</h2>
+          <h2 className="text-sm font-semibold uppercase tracking-[0.18em] text-ink">Checkout</h2>
           <p className="mt-3 text-sm leading-6 text-muted">{message}</p>
         </div>
         <span className={`rounded-full px-3 py-1 text-xs font-bold ${state === "CONFIRMED" ? "bg-accent text-background" : state === "FAILED" ? "bg-red-300 text-background" : "bg-violet/10 text-violet"}`}>
@@ -212,16 +212,16 @@ export function PaymentFlow({
       </div>
 
       <div className="mt-5 rounded-lg border border-line bg-white/[0.03] p-4">
-        <div className="text-xs uppercase tracking-[0.14em] text-muted">Mainnet XSGD payment</div>
+        <div className="text-xs uppercase tracking-[0.14em] text-muted">Real XSGD payment</div>
         <div className="mt-2 flex items-start gap-2 text-sm text-muted">
           <ShieldAlert size={16} className="mt-0.5 text-amber" />
-          Primary real-funds path on Avalanche C-Chain. SmartMerce requires the official XSGD token and an explicit trusted merchant wallet before requesting a signature.
+          Uses Avalanche C-Chain Mainnet. SmartMerce will not request a wallet signature until the product, amount and merchant wallet are configured.
         </div>
       </div>
 
       {!fulfillmentEnabled ? (
         <div className="mt-5 rounded-lg border border-line bg-white/[0.03] p-4 text-sm leading-6 text-muted">
-          Real-world fulfillment is ready to connect. Set <span className="font-semibold text-ink">NEXT_PUBLIC_FULFILLMENT_PROVIDER=shopify</span> and the server-side Shopify Admin settings to create a real merchant order after verified payment.
+          Store fulfillment is not connected yet. Payments can be verified, and a Shopify order can be created once the fulfillment settings are added.
         </div>
       ) : null}
 
@@ -296,7 +296,7 @@ export function PaymentFlow({
           className="focus-ring mt-5 flex w-full items-center justify-center gap-2 rounded-lg bg-accent px-5 py-4 text-sm font-bold uppercase tracking-[0.16em] text-background transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50"
         >
           {busy ? <Loader2 size={18} className="animate-spin" /> : <WalletCards size={18} />}
-          Confirm Direct XSGD Payment
+          Pay with XSGD
         </button>
       ) : null}
 
@@ -304,7 +304,7 @@ export function PaymentFlow({
         <StraitsXCardFunding authorization={authorization} product={product} onIssued={confirmStraitsXCardOrder} />
       ) : (
         <div className="mt-5 rounded-lg border border-line bg-white/[0.03] p-4 text-sm leading-6 text-muted">
-          StraitsX sandbox card funding is disabled for the mainnet demo. Set <span className="font-semibold text-ink">NEXT_PUBLIC_ENABLE_STRAITSX_SANDBOX=true</span> to show the Fuji testnet card rail again.
+          Test-card mode is hidden for this mainnet demo.
         </div>
       )}
 

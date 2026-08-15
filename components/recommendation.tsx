@@ -14,7 +14,7 @@ export function Recommendation({
     <section className="glass rounded-lg p-6 shadow-glow">
       <div className="flex items-center gap-2 text-accent">
         <Sparkles size={18} />
-        <h2 className="text-sm font-semibold uppercase tracking-[0.18em]">SmartMerce Recommends</h2>
+        <h2 className="text-sm font-semibold uppercase tracking-[0.18em]">Best Pick</h2>
       </div>
       <div className="mt-5 grid gap-5 md:grid-cols-[1fr_auto] md:items-end">
         <div>

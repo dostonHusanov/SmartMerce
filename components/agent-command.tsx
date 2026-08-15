@@ -23,13 +23,13 @@ const suggestions = [
 ];
 
 const initialSteps: AgentStep[] = [
-  { id: "understand", label: "Understanding request", status: "pending" },
-  { id: "budget", label: "Budget detected", status: "pending" },
-  { id: "search", label: "Searching merchants", status: "pending" },
-  { id: "compare", label: "Comparing products", status: "pending" },
-  { id: "select", label: "Selecting best option", status: "pending" },
-  { id: "policy", label: "Spending policy", status: "pending" },
-  { id: "authorization", label: "Authorization", status: "pending" },
+  { id: "understand", label: "Read request", status: "pending" },
+  { id: "budget", label: "Check budget", status: "pending" },
+  { id: "search", label: "Search stores", status: "pending" },
+  { id: "compare", label: "Compare choices", status: "pending" },
+  { id: "select", label: "Pick best match", status: "pending" },
+  { id: "policy", label: "Safety check", status: "pending" },
+  { id: "authorization", label: "Ask approval", status: "pending" },
 ];
 
 const initialActivity: ActivityLogEntry[] = [
@@ -153,14 +153,14 @@ export function AgentCommand() {
             <div>
               <div className="flex items-center gap-2 text-accent">
                 <Search size={18} />
-                <h2 className="text-sm font-semibold uppercase tracking-[0.18em]">Shopping request</h2>
+                <h2 className="text-sm font-semibold uppercase tracking-[0.18em]">What do you want to buy?</h2>
               </div>
               <p className="mt-2 text-sm leading-6 text-muted">
-                Ask for almost any everyday product. SmartMerce searches live listings when web discovery is configured, then compares options and prepares a purchase only after approval.
+                Type a normal shopping request. SmartMerce searches live stores, compares the best options, and asks before any payment step.
               </p>
             </div>
             <div className="shrink-0 rounded-full border border-accent/30 bg-accent/10 px-3 py-1 text-xs font-bold uppercase tracking-[0.12em] text-accent">
-              Web-ready agent
+              Live web search
             </div>
           </div>
           <textarea
@@ -188,11 +188,11 @@ export function AgentCommand() {
             className="focus-ring mt-5 flex min-h-14 w-full items-center justify-center gap-2 rounded-lg bg-accent px-5 py-4 text-sm font-bold uppercase tracking-[0.14em] text-background transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-70 sm:tracking-[0.18em]"
           >
             {loading ? <Loader2 size={18} className="animate-spin" /> : <ArrowRight size={18} />}
-            Run SmartMerce
+            Find Products
           </button>
           <div className="mt-4 flex items-center gap-2 text-xs text-muted">
             <ShieldCheck size={14} className="text-accent" />
-            AI can discover and rank products. Spending policy and payment verification stay deterministic.
+            You stay in control. Money moves only after you approve in your wallet.
           </div>
         </section>
 
@@ -206,10 +206,10 @@ export function AgentCommand() {
               <div>
                 <h2 className="text-xl font-semibold text-ink">Top Products</h2>
                 <p className="mt-1 text-sm text-muted">
-                  {result.products.length} products discovered from {result.discoverySource === "internet" ? "live internet listings" : "supported merchants"}
+                  {result.products.length} options found from {result.discoverySource === "internet" ? "live stores" : "supported merchants"}
                 </p>
               </div>
-              <span className="rounded-full border border-line px-3 py-1 text-xs text-muted">Top 3 ranked</span>
+              <span className="rounded-full border border-line px-3 py-1 text-xs text-muted">Best matches</span>
             </div>
             <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
               {result.shortlist.map((product, index) => (
@@ -234,8 +234,8 @@ export function AgentCommand() {
           <div className="text-xs uppercase tracking-[0.18em] text-muted">AI Provider</div>
           <div className="mt-2 text-sm font-semibold text-ink">{result?.provider ?? "deterministic-fallback"}</div>
           <div className="mt-3 text-xs uppercase tracking-[0.18em] text-muted">Discovery</div>
-          <div className="mt-2 text-sm font-semibold text-ink">{result?.discoverySource === "internet" ? "live internet products" : "catalogue fallback"}</div>
-          <p className="mt-3 text-xs leading-5 text-muted">Provider adapters can be added later without changing policy, payment or merchant verification.</p>
+          <div className="mt-2 text-sm font-semibold text-ink">{result?.discoverySource === "internet" ? "live store results" : "demo catalogue"}</div>
+          <p className="mt-3 text-xs leading-5 text-muted">SmartMerce separates AI search from payment approval, so product discovery can stay flexible while spending stays controlled.</p>
         </section>
       </aside>
     </div>
