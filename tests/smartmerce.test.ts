@@ -6,7 +6,7 @@ import { rankProducts } from "@/lib/commerce/ranking";
 import { createAuthorization, validateAuthorization } from "@/lib/policy/authorization";
 import { evaluateSpendingPolicy } from "@/lib/policy/spending-policy";
 import { getConfiguredMerchantWallet, getConfiguredXsgdContract, officialAvalancheXsgdContract } from "@/lib/blockchain/xsgd";
-import { avalancheNetworkConfig, erc20Abi } from "@/lib/blockchain/avalanche";
+import { avalancheFujiRpcUrl, avalancheNetworkConfig, avalancheRpcUrl, erc20Abi } from "@/lib/blockchain/avalanche";
 import { StraitsXCardProvider } from "@/lib/payments/card-provider";
 import { DirectXsgdPaymentProvider } from "@/lib/payments/payment-provider";
 import { createVerifiedOrder, getAuthorizationById, saveAuthorization, updateOrderFulfillment } from "@/lib/merchant/orders";
@@ -232,6 +232,28 @@ describe("SmartMerce deterministic core", () => {
     expect(avalancheNetworkConfig.chainId).toBe(43114);
     expect(avalancheNetworkConfig.hexChainId).toBe("0xA86A");
     expect(avalancheNetworkConfig.rpcUrl).toContain("api.avax.network");
+  });
+
+  it("falls back to public Avalanche RPC URLs when env values are blank", async () => {
+    const previousRpc = process.env.NEXT_PUBLIC_AVALANCHE_RPC_URL;
+    const previousFujiRpc = process.env.NEXT_PUBLIC_AVALANCHE_FUJI_RPC_URL;
+    process.env.NEXT_PUBLIC_AVALANCHE_RPC_URL = "";
+    process.env.NEXT_PUBLIC_AVALANCHE_FUJI_RPC_URL = " ";
+
+    vi.resetModules();
+    const module = await import("@/lib/blockchain/avalanche");
+
+    expect(module.avalancheRpcUrl).toBe("https://api.avax.network/ext/bc/C/rpc");
+    expect(module.avalancheFujiRpcUrl).toBe("https://api.avax-test.network/ext/bc/C/rpc");
+
+    restoreEnv("NEXT_PUBLIC_AVALANCHE_RPC_URL", previousRpc);
+    restoreEnv("NEXT_PUBLIC_AVALANCHE_FUJI_RPC_URL", previousFujiRpc);
+    vi.resetModules();
+  });
+
+  it("keeps non-empty Avalanche RPC configuration available to viem", () => {
+    expect(avalancheRpcUrl).toBeTruthy();
+    expect(avalancheFujiRpcUrl).toBeTruthy();
   });
 
   it("uses the official Avalanche C-Chain XSGD contract by default", () => {

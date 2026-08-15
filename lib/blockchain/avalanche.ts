@@ -1,11 +1,22 @@
 import { createPublicClient, custom, defineChain, formatEther, http, parseAbi, type Hash } from "viem";
 
+const defaultAvalancheRpcUrl = "https://api.avax.network/ext/bc/C/rpc";
+const defaultAvalancheFujiRpcUrl = "https://api.avax-test.network/ext/bc/C/rpc";
+
+function envUrlOrDefault(value: string | undefined, fallback: string) {
+  const trimmed = value?.trim();
+  return trimmed || fallback;
+}
+
+export const avalancheRpcUrl = envUrlOrDefault(process.env.NEXT_PUBLIC_AVALANCHE_RPC_URL, defaultAvalancheRpcUrl);
+export const avalancheFujiRpcUrl = envUrlOrDefault(process.env.NEXT_PUBLIC_AVALANCHE_FUJI_RPC_URL, defaultAvalancheFujiRpcUrl);
+
 export const avalancheMainnet = defineChain({
   id: 43114,
   name: "Avalanche C-Chain",
   nativeCurrency: { name: "AVAX", symbol: "AVAX", decimals: 18 },
   rpcUrls: {
-    default: { http: [process.env.NEXT_PUBLIC_AVALANCHE_RPC_URL ?? "https://api.avax.network/ext/bc/C/rpc"] },
+    default: { http: [avalancheRpcUrl] },
   },
   blockExplorers: {
     default: { name: "SnowTrace", url: "https://snowtrace.io" },
@@ -17,7 +28,7 @@ export const avalancheFuji = defineChain({
   name: "Avalanche Fuji",
   nativeCurrency: { name: "AVAX", symbol: "AVAX", decimals: 18 },
   rpcUrls: {
-    default: { http: [process.env.NEXT_PUBLIC_AVALANCHE_FUJI_RPC_URL ?? "https://api.avax-test.network/ext/bc/C/rpc"] },
+    default: { http: [avalancheFujiRpcUrl] },
   },
   blockExplorers: {
     default: { name: "SnowTrace Testnet", url: "https://testnet.snowtrace.io" },
@@ -33,7 +44,7 @@ export const avalancheNetworkConfig = {
     symbol: "AVAX",
     decimals: 18,
   },
-  rpcUrl: process.env.NEXT_PUBLIC_AVALANCHE_RPC_URL ?? "https://api.avax.network/ext/bc/C/rpc",
+  rpcUrl: avalancheRpcUrl,
   explorerBaseUrl: "https://snowtrace.io",
 };
 
@@ -46,7 +57,7 @@ export const avalancheFujiNetworkConfig = {
     symbol: "AVAX",
     decimals: 18,
   },
-  rpcUrl: process.env.NEXT_PUBLIC_AVALANCHE_FUJI_RPC_URL ?? "https://api.avax-test.network/ext/bc/C/rpc",
+  rpcUrl: avalancheFujiRpcUrl,
   explorerBaseUrl: "https://testnet.snowtrace.io",
 };
 
