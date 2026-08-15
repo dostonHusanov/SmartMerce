@@ -1,5 +1,6 @@
 import { randomUUID } from "crypto";
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { getAddress, isAddress } from "viem";
 import { getProductById, reserveProductInventory } from "@/lib/commerce/products";
@@ -23,7 +24,9 @@ const globalStore = globalThis as typeof globalThis & {
 };
 
 const persistenceDisabled = process.env.NODE_ENV === "test" || process.env.VITEST === "true";
-const stateDirectory = join(process.cwd(), ".smartmerce");
+const stateDirectory = process.env.NODE_ENV === "development"
+  ? join(process.cwd(), ".smartmerce")
+  : join(tmpdir(), "smartmerce");
 const stateFile = join(stateDirectory, "orders.json");
 
 function createEmptyStore(): SmartMerceStore {
@@ -55,8 +58,12 @@ function persistStore() {
     orders: [...orders.values()],
   };
 
-  mkdirSync(stateDirectory, { recursive: true });
-  writeFileSync(stateFile, JSON.stringify(payload, null, 2));
+  try {
+    mkdirSync(stateDirectory, { recursive: true });
+    writeFileSync(stateFile, JSON.stringify(payload, null, 2));
+  } catch {
+    // Serverless filesystems may be ephemeral or read-only. Keep the in-memory store alive for this runtime.
+  }
 }
 
 const store = globalStore.__smartmerceStore ??= loadPersistedStore();
