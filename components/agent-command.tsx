@@ -153,11 +153,11 @@ export function AgentCommand() {
                 <h2 className="text-sm font-semibold uppercase tracking-[0.18em]">Shopping request</h2>
               </div>
               <p className="mt-2 text-sm leading-6 text-muted">
-                Ask for almost any everyday product. SmartMerce maps the request to supported merchants, compares options and prepares a purchase only after approval.
+                Ask for almost any everyday product. SmartMerce searches live listings when web discovery is configured, then compares options and prepares a purchase only after approval.
               </p>
             </div>
             <div className="shrink-0 rounded-full border border-accent/30 bg-accent/10 px-3 py-1 text-xs font-bold uppercase tracking-[0.12em] text-accent">
-              Agent discovery
+              Web-ready agent
             </div>
           </div>
           <textarea
@@ -202,7 +202,9 @@ export function AgentCommand() {
             <div className="mb-4 flex items-end justify-between gap-3">
               <div>
                 <h2 className="text-xl font-semibold text-ink">Top Products</h2>
-                <p className="mt-1 text-sm text-muted">{result.products.length} products discovered from supported merchants</p>
+                <p className="mt-1 text-sm text-muted">
+                  {result.products.length} products discovered from {result.discoverySource === "internet" ? "live internet listings" : "supported merchants"}
+                </p>
               </div>
               <span className="rounded-full border border-line px-3 py-1 text-xs text-muted">Top 3 ranked</span>
             </div>
@@ -228,6 +230,8 @@ export function AgentCommand() {
         <section className="glass rounded-lg p-5">
           <div className="text-xs uppercase tracking-[0.18em] text-muted">AI Provider</div>
           <div className="mt-2 text-sm font-semibold text-ink">{result?.provider ?? "deterministic-fallback"}</div>
+          <div className="mt-3 text-xs uppercase tracking-[0.18em] text-muted">Discovery</div>
+          <div className="mt-2 text-sm font-semibold text-ink">{result?.discoverySource === "internet" ? "live internet products" : "catalogue fallback"}</div>
           <p className="mt-3 text-xs leading-5 text-muted">Provider adapters can be added later without changing policy, payment or merchant verification.</p>
         </section>
       </aside>

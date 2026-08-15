@@ -29,6 +29,9 @@ export type Product = {
   image: string;
   inStock: boolean;
   inventory: number;
+  source?: "catalogue" | "internet";
+  sourceUrl?: string;
+  sourceMerchant?: string;
 };
 
 export type ShoppingIntent = {
@@ -151,4 +154,5 @@ export type AgentRunResult = {
   steps: AgentStep[];
   activity: ActivityLogEntry[];
   provider: string;
+  discoverySource?: "internet" | "catalogue";
 };

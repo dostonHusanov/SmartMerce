@@ -1,6 +1,8 @@
 import { describe, expect, it, vi } from "vitest";
 import { shoppingIntentSchema } from "@/lib/ai/schemas";
 import { parseIntentDeterministically } from "@/lib/ai/provider";
+import { searchProducts } from "@/lib/ai/tools";
+import { discoverInternetProducts } from "@/lib/commerce/web-discovery";
 import { getProductById, searchCatalogue } from "@/lib/commerce/products";
 import { rankProducts } from "@/lib/commerce/ranking";
 import { createAuthorization, validateAuthorization } from "@/lib/policy/authorization";
@@ -40,6 +42,10 @@ function clearFulfillmentEnv() {
   delete process.env.SHOPIFY_STORE_DOMAIN;
   delete process.env.SHOPIFY_ADMIN_ACCESS_TOKEN;
   delete process.env.SHOPIFY_PRODUCT_VARIANT_MAP;
+}
+
+function restoreSerpApiKey(value: string | undefined) {
+  restoreEnv("SERPAPI_API_KEY", value);
 }
 
 describe("SmartMerce deterministic core", () => {
@@ -120,6 +126,51 @@ describe("SmartMerce deterministic core", () => {
     expect(intent.preferences).toContain("compare options");
     expect(results.length).toBeGreaterThan(0);
     expect(results.every((product) => product.category === "fitness gear")).toBe(true);
+  });
+
+  it("falls back to the local catalogue when internet discovery is not configured", async () => {
+    const original = process.env.SERPAPI_API_KEY;
+    restoreSerpApiKey(undefined);
+
+    const intent = parseIntentDeterministically("Buy me a desk lamp under 9 XSGD");
+    const results = await searchProducts(intent);
+
+    expect(results.length).toBeGreaterThan(0);
+    expect(results.every((product) => product.source !== "internet")).toBe(true);
+    restoreSerpApiKey(original);
+  });
+
+  it("imports live internet product results into SmartMerce product shape", async () => {
+    const original = process.env.SERPAPI_API_KEY;
+    const fetchSpy = vi.spyOn(globalThis, "fetch").mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        shopping_results: [
+          {
+            title: "Live Web Desk Lamp",
+            source: "Example Store",
+            product_link: "https://example.com/lamp",
+            thumbnail: "https://example.com/lamp.jpg",
+            extracted_price: 8.25,
+            rating: 4.6,
+            reviews: 88,
+          },
+        ],
+      }),
+    } as Response);
+
+    restoreSerpApiKey("test-key");
+    const intent = parseIntentDeterministically("Buy me a desk lamp under 9 XSGD");
+    const results = await discoverInternetProducts(intent);
+
+    expect(results).toHaveLength(1);
+    expect(results[0].source).toBe("internet");
+    expect(results[0].merchant).toBe("Example Store");
+    expect(results[0].merchantId).toBe("internet-merchant");
+    expect(results[0].priceXsgd).toBe(8.25);
+
+    fetchSpy.mockRestore();
+    restoreSerpApiKey(original);
   });
 
   it("filters products by category, stock and budget", () => {

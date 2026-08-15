@@ -38,13 +38,14 @@ export async function runSmartMerceAgent(command: string): Promise<AgentRunResul
   };
   if (intent.maxBudgetXsgd) activity.push(stamp(`Budget identified: ${intent.maxBudgetXsgd} XSGD`));
 
-  const discovered = searchProducts(intent);
+  const discovered = await searchProducts(intent);
+  const discoverySource = discovered.some((product) => product.source === "internet") ? "internet" : "catalogue";
   steps[2] = {
     ...steps[2],
     status: discovered.length ? "completed" : "failed",
-    detail: `${discovered.length} products discovered`,
+    detail: `${discovered.length} ${discoverySource} products discovered`,
   };
-  activity.push(stamp(`${discovered.length} products matched`));
+  activity.push(stamp(`${discovered.length} products matched from ${discoverySource}`));
 
   const shortlist = compareProducts(intent, discovered.map((product) => product.id));
   steps[3] = {
@@ -63,6 +64,7 @@ export async function runSmartMerceAgent(command: string): Promise<AgentRunResul
       steps,
       activity,
       provider: provider.name,
+      discoverySource,
     };
   }
 
@@ -103,5 +105,6 @@ export async function runSmartMerceAgent(command: string): Promise<AgentRunResul
     steps,
     activity,
     provider: provider.name,
+    discoverySource,
   };
 }

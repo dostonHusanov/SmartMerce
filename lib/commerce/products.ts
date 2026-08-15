@@ -5,6 +5,7 @@ export const trustedMerchantIds = [
   "urban-byte",
   "circuit-sg",
   "northstar-mobile",
+  "internet-merchant",
 ];
 
 export const products: Product[] = [
@@ -476,6 +477,13 @@ export function listProducts() {
 
 export function getProductById(id: string) {
   return catalogueStore.products.get(id);
+}
+
+export function upsertDiscoveredProducts(discoveredProducts: Product[]) {
+  discoveredProducts.forEach((product) => {
+    catalogueStore.products.set(product.id, product);
+  });
+  return discoveredProducts;
 }
 
 export function reserveProductInventory(id: string) {
