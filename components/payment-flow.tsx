@@ -5,6 +5,7 @@ import { CheckCircle2, ExternalLink, Loader2, ShieldAlert, WalletCards } from "l
 import { avalancheNetworkConfig, connectWallet, explorerTransactionUrl, getAvaxBalance, getChainId, getInjectedEthereum, shortAddress, switchToAvalanche, waitForTransaction } from "@/lib/blockchain/avalanche";
 import { getConfiguredMerchantWallet, getConfiguredXsgdContract, getXsgdBalance, sendXsgdTransfer, verifyXsgdTransferReceipt } from "@/lib/blockchain/xsgd";
 import { StraitsXCardFunding } from "@/components/straitsx-card-funding";
+import { rememberBrowserOrder } from "@/lib/merchant/browser-orders";
 import type { DeliveryInfo, Order, PaymentState, PurchaseAuthorization, RankedProduct } from "@/types";
 
 const progressSteps = [
@@ -119,6 +120,20 @@ export function PaymentFlow({
       if (!verified.confirmed) throw new Error("Transaction reverted.");
       if (!verified.matchedTransfer) throw new Error("XSGD transfer proof did not match the authorized buyer, merchant, token and amount.");
 
+      const browserFallbackOrder: Order = {
+        id: `local_${transactionHash.slice(2, 14)}`,
+        productId: product.id,
+        productName: product.name,
+        merchant: product.merchant,
+        buyerWallet,
+        amountXsgd: product.priceXsgd,
+        paymentMethod: "direct-xsgd",
+        transactionHash,
+        status: "confirmed",
+        fulfillmentStatus: "not_configured",
+        createdAt: new Date().toISOString(),
+      };
+
       const checkout = await fetch("/api/merchant/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -132,8 +147,15 @@ export function PaymentFlow({
         }),
       });
       const payload = await checkout.json();
-      if (!checkout.ok) throw new Error(payload.error ?? "Checkout verification failed.");
+      if (!checkout.ok) {
+        rememberBrowserOrder(browserFallbackOrder);
+        setOrder(browserFallbackOrder);
+        setState("CONFIRMED");
+        setMessage(`Payment verified on-chain. Local order saved; server order sync needs attention: ${payload.error ?? "Checkout verification failed."}`);
+        return;
+      }
 
+      rememberBrowserOrder(payload.order);
       setOrder(payload.order);
       setState("CONFIRMED");
       setMessage("Order confirmed after verified payment.");
@@ -177,6 +199,7 @@ export function PaymentFlow({
     if (!checkout.ok) throw new Error(payload.error ?? "StraitsX card checkout verification failed.");
 
     setHash(transactionHash);
+    rememberBrowserOrder(payload.order);
     setOrder(payload.order);
     setState("CONFIRMED");
     setMessage("Order confirmed after StraitsX sandbox card issuance.");
