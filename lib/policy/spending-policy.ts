@@ -1,9 +1,16 @@
 import { getProductById, trustedMerchantIds } from "@/lib/commerce/products";
 import type { PolicyCheck, PolicyResult, ShoppingIntent } from "@/types";
 
+function numberFromEnv(name: string, fallback: number) {
+  const value = process.env[name]?.trim();
+  if (!value) return fallback;
+  const parsed = Number(value);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
+}
+
 export const defaultSpendingPolicy = {
-  maxTransactionXsgd: 10,
-  dailyLimitXsgd: 20,
+  maxTransactionXsgd: numberFromEnv("NEXT_PUBLIC_MAX_TRANSACTION_XSGD", 60),
+  dailyLimitXsgd: numberFromEnv("NEXT_PUBLIC_DAILY_LIMIT_XSGD", 100),
   requireUserApproval: true,
   allowedMerchantIds: trustedMerchantIds,
 };
@@ -28,7 +35,7 @@ export function evaluateSpendingPolicy(input: {
     check("positive_amount", "Positive amount", input.amount > 0, "Amount must be greater than 0 XSGD."),
     check(
       "transaction_limit",
-      "Within 10 XSGD transaction limit",
+      `Within ${defaultSpendingPolicy.maxTransactionXsgd} XSGD transaction limit`,
       input.amount <= defaultSpendingPolicy.maxTransactionXsgd,
       `${input.amount.toFixed(2)} XSGD requested against a ${defaultSpendingPolicy.maxTransactionXsgd} XSGD limit.`,
     ),

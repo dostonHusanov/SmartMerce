@@ -210,7 +210,7 @@ describe("SmartMerce deterministic core", () => {
   it("blocks transactions over the limit", () => {
     const result = evaluateSpendingPolicy({
       productId: "prod-key-002",
-      amount: 10.8,
+      amount: 61,
       merchantId: "circuit-sg",
     });
 
@@ -223,7 +223,7 @@ describe("SmartMerce deterministic core", () => {
       productId: "prod-ear-001",
       amount: 4.9,
       merchantId: "merce-demo",
-      dailySpendXsgd: 16,
+      dailySpendXsgd: 99,
     });
 
     expect(result.allowed).toBe(false);

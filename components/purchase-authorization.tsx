@@ -4,6 +4,8 @@ import * as Dialog from "@radix-ui/react-dialog";
 import { ShieldCheck, X } from "lucide-react";
 import type { PolicyResult, PurchaseAuthorization, RankedProduct } from "@/types";
 
+const maxTransactionXsgd = process.env.NEXT_PUBLIC_MAX_TRANSACTION_XSGD?.trim() || "60";
+
 export function PurchaseAuthorization({
   product,
   policy,
@@ -71,7 +73,7 @@ export function PurchaseAuthorization({
               ["Merchant", product.merchant],
               ["Amount", `${product.priceXsgd.toFixed(2)} XSGD`],
               ["Network", "Avalanche C-Chain"],
-              ["Spending limit", "10 XSGD"],
+              ["Spending limit", `${maxTransactionXsgd} XSGD`],
             ].map(([label, value]) => (
               <div key={label} className="flex items-center justify-between rounded-md bg-white/[0.04] px-4 py-3">
                 <dt className="text-muted">{label}</dt>
